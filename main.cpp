@@ -4,6 +4,23 @@
 #include<fstream>
 #include<string>
 #include<iomanip>
+std::string path_prompt();
+void process(const std::string&);
+int main(int argc,char*argv[]){
+  std::string path;
+  if(argc >1){
+    path = argv[1];
+    if(not std::filesystem::exists(path) or not std::filesystem::is_regular_file(path)){
+      std::cerr<<"FAWAZ_HEX: "<<argv[1]<<" No such file or directory"<<std::endl;
+      exit(EXIT_FAILURE);
+     }else
+      process(path);
+    }else{
+      path = path_prompt();
+      process(path);
+     }
+  return EXIT_SUCCESS;
+}
 std::string path_prompt(){
   std::cout<<"Please enter the path of the file:-"<<std::endl;
   std::string path;
@@ -36,7 +53,7 @@ void process(const std::string&path){
     if(counter == 0){
       std::cout<<std::uppercase<<std::setw(8)<<std::setfill('0')<<std::hexfloat<<std::hex<<16*address++<<": ";   // this is how to write a hexidecimal number in 16 bit format
       std::cout<<std::uppercase<<std::setw(2)<<std::hex<<static_cast<int>(buff[i]);
-      if(buff[i] == '\n') temp.push_back('.');
+      if(buff[i] == '\n' or buff[i] == '\t') temp.push_back('.');
       else temp.push_back(buff[i]);
       space = not(space);
       counter++;
@@ -73,19 +90,4 @@ void process(const std::string&path){
     }
   std::cout<<temp<<std::endl;
   file.close();
-}
-int main(int argc,char*argv[]){
-  std::string path;
-  if(argc >1){
-    path = argv[1];
-    if(not std::filesystem::exists(path) or not std::filesystem::is_regular_file(path)){
-      std::cerr<<"FAWAZ_HEX: "<<argv[1]<<" No such file or directory"<<std::endl;
-      exit(EXIT_FAILURE);
-     }else
-      process(path);
-    }else{
-      path = path_prompt();
-      process(path);
-     }
-  return EXIT_SUCCESS;
 }
